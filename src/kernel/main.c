@@ -922,10 +922,33 @@ while(snake_head[0] != snake_area_height - 1 && snake_head[1] != snake_area_widt
      if(move_direction == 4){
 	snake_head[1]++;
       }
+           if(snake_Array[snake_head[0]][snake_head[1]] == '*') {
+	snake_state = 0;
+	break;
+	}
+     if(snake_head[0] == 16 && snake_head[1] == 23){
+	snake_state = 1;
+	break;
+	}
      sleep(1);
 
 }
+if(snake_state)  gameSuccessShow();
+else gameOverShow();
+sleep(9);
+clear();
+help()
+}
+void gameOverShow(){
+	printf("=======================================================================\n");
+	printf("==============================Game Over================================\n");
+	printf("=======================will exit in 3 seconds...=======================\n");
+}
 
+void gameSuccessShow(){
+	printf("=======================================================================\n");
+	printf("============================Congratulation!================================\n");
+	printf("=======================will exit in 3 seconds...=======================\n");
 }
 
 
