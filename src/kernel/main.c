@@ -380,7 +380,7 @@ PUBLIC int kernel_main()
 		p_proc->regs.eflags = eflags;
 
 		/* p_proc->nr_tty		= 0; */
-
+		p_proc->run_count = 0;
 		p_proc->p_flags = 0;
 		p_proc->p_msg = 0;
 		p_proc->p_recvfrom = NO_TASK;

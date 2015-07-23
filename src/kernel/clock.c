@@ -34,8 +34,29 @@ PUBLIC void clock_handler(int irq)
 	if (++ticks >= MAX_TICKS)
 		ticks = 0;
 
+
 	if (p_proc_ready->ticks)
+	   {
 		p_proc_ready->ticks--;
+//**************************************************************
+
+
+//every time runs, count add one
+		p_proc_ready->run_count++;
+	   }
+
+//if has run for 20 time,lowing the priority
+
+	if(p_proc_ready->run_count == 2){
+		p_proc_ready->ticks = 0;
+		p_proc_ready->priority--;
+		if(p_proc_ready->priority == 0){
+			p_proc_ready->priority = 1;
+		}
+	        p_proc_ready->run_count = 0;	
+	}
+
+//*****************************************************************
 
 	if (key_pressed)
 		inform_int(TASK_TTY);
@@ -43,7 +64,8 @@ PUBLIC void clock_handler(int irq)
 	if (k_reenter != 0) {
 		return;
 	}
-
+	
+	
 	if (p_proc_ready->ticks > 0) {
 		return;
 	}
@@ -51,7 +73,6 @@ PUBLIC void clock_handler(int irq)
 	schedule();
 
 }
-
 /*****************************************************************************
  *                                milli_delay
  *****************************************************************************/
