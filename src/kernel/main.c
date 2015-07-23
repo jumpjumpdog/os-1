@@ -49,7 +49,6 @@ int snake_area_width = 30;
 int snake_area_height = 17;
 int move_direction = 4;
 
-
 #define MAX_NUM 1000//扩展生成状态节点的最大数目
 const int NO_BLANK=-1001; //表示没有空格
 const int TREE_DEPTH=3; //搜索树的最大深度，如果增加此值可以提高计算机的“智力”，
@@ -380,7 +379,7 @@ PUBLIC int kernel_main()
 		p_proc->regs.eflags = eflags;
 
 		/* p_proc->nr_tty		= 0; */
-		p_proc->run_count = 0;
+
 		p_proc->p_flags = 0;
 		p_proc->p_msg = 0;
 		p_proc->p_recvfrom = NO_TASK;
@@ -393,12 +392,15 @@ PUBLIC int kernel_main()
 			p_proc->filp[j] = 0;
 
 		p_proc->ticks = p_proc->priority = prio;
+		p_proc->run_state = 1;
 
 		p_task_stack -= p_task->stacksize;
 		p_proc++;
 		p_task++;
 		selector_ldt += 1 << 3;
 	}
+	proc_table[5].run_state = 0;
+	proc_table[6].run_state = 0;
 
         /* proc_table[NR_TASKS + 0].nr_tty = 0; */
         /* proc_table[NR_TASKS + 1].nr_tty = 1; */
@@ -407,7 +409,7 @@ PUBLIC int kernel_main()
 	k_reenter = 0;
 	ticks = 0;
 
-	p_proc_ready	= proc_table;
+	p_proc_ready = proc_table;
 
 	init_clock();
         init_keyboard();
@@ -464,7 +466,6 @@ void TestA()
 			printf("        *        * * *           1352888 linyueqiang        *\n");
 			printf("        *                                                   *\n");
 			printf("        *****************************************************\n");
-	StartTheSnake();
 	while (1) {
 		printl("[root@localhost /] ");
 		int r = read(fd_stdin, rdbuf, 70);
@@ -483,10 +484,34 @@ void TestA()
 		}
                 else if (strcmp(rdbuf, "information") == 0)
 		{
-			printf("  SUN Lin 1252977 !   ~~(^_^)~~\n");
-                        printf("ZHANG Lijun 1252922 ! ~~(^_^)~~\n");
+			printf("  Tan jingru 1352892 !   ~~(^_^)~~\n");
+                        printf("Lin Yueqiang 1352888 ! ~~(^_^)~~\n");
 			continue;
 
+		}
+		else if(strcmp(rdbuf,"labyrinth") == 0 ){
+			move_direction = 4;
+			snake_head[0] = 1;
+			snake_head[1] = 2;
+			StartTheSnake();
+		}
+		else if(strcmp(rdbuf,"pause a") == 0 ){
+			proc_table[4].run_state = 0 ;
+		}
+		else if(strcmp(rdbuf,"pause b") == 0 ){
+			proc_table[5].run_state = 0 ;
+		}
+		else if(strcmp(rdbuf,"pause c") == 0 ){
+			proc_table[6].run_state = 0 ;
+		}
+		else if(strcmp(rdbuf,"resume a") == 0 ){
+			proc_table[4].run_state = 1 ;
+		}
+		else if(strcmp(rdbuf,"resume b") == 0 ){
+			proc_table[5].run_state = 1 ;
+		}
+		else if(strcmp(rdbuf,"resume c") == 0 ){
+			proc_table[6].run_state = 1 ;
 		}
                 else if (strcmp(rdbuf, "help") == 0)
 		{
@@ -505,53 +530,53 @@ void TestA()
 			printf("        *                                  \n");
 			printf("        *****************************************************\n");
 	
-	while (1) {
-		printl("[You /] ");
-		int r = read(fd_stdin, rdbuf, 70);
-		rdbuf[r] = 0;
-	 	//show();
-                if (strcmp(rdbuf, "Who are you") == 0)
-                {
-			printf("I/m little yellow chicken~\n");
-			continue;
-                }
-		else if (strcmp(rdbuf, "Where are you from") == 0)
-		{
-			printf("Turkey^_^ ! \n");
-			continue;
+			while (1) {
+				printl("[You /] ");
+				int r = read(fd_stdin, rdbuf, 70);
+				rdbuf[r] = 0;
+			 	//show();
+				if (strcmp(rdbuf, "Who are you") == 0)
+				{
+					printf("I/m little yellow chicken~\n");
+					continue;
+				}
+				else if (strcmp(rdbuf, "Where are you from") == 0)
+				{
+					printf("Turkey^_^ ! \n");
+					continue;
 
-		}
-                else if (strcmp(rdbuf, "How are you") == 0)
-		{
-			printf("I have to make a OS just in three days...T_T ! \n");
-			continue;
-		}
-		else if (strcmp(rdbuf, "Mirror, mirror, who is the most beautiful woman in the world") == 0)
-		{
+				}
+				else if (strcmp(rdbuf, "How are you") == 0)
+				{
+					printf("I have to make a OS just in three days...T_T ! \n");
+					continue;
+				}
+				else if (strcmp(rdbuf, "Mirror, mirror, who is the most beautiful woman in the world") == 0)
+				{
 
-			printf("hehe! \n");
-			continue;
-		}
+					printf("hehe! \n");
+					continue;
+				}
 		
-		else if (strcmp(rdbuf, "Exit") == 0)
-		{
-			clear();
-			printf("        *****************************************************\n");
- 			printf("        *                                  \n");
-			printf("        *        * * *             A stupid OS           \n");
-			printf("        *      *  = =  *             Welcome!\n\n");
-			printf("        *     *         *       by 1352892 tanjingru\n");
-                        printf("        *      *   o   *                AND \n");
-			printf("        *        * * *              1352888 linyueqiang        \n");
-			printf("        *                                  \n");
-			printf("        *****************************************************\n");
-        break;
-		}
+				else if (strcmp(rdbuf, "Exit") == 0)
+				{
+					clear();
+					printf("        *****************************************************\n");
+		 			printf("        *                                  \n");
+					printf("        *        * * *             A stupid OS           \n");
+					printf("        *      *  = =  *             Welcome!\n\n");
+					printf("        *     *         *       by 1352892 tanjingru\n");
+				        printf("        *      *   o   *                AND \n");
+					printf("        *        * * *              1352888 linyueqiang        \n");
+					printf("        *                                  \n");
+					printf("        *****************************************************\n");
+					break;
+				}
 		
 
-		else
-			printf("Don't understand what you said...\n");
-	}
+				else
+					printf("Don't understand what you said...\n");
+			}
 		}
 		else if (strcmp(rdbuf, "runttt") == 0)
 		{
@@ -563,17 +588,26 @@ void TestA()
 		{
 			clear();
 			printf("        *****************************************************\n");
- 			printf("        *                                  \n");
+	 		printf("        *                                  \n");
 			printf("        *        * * *             A stupid OS           \n");
 			printf("        *      *  = =  *             Welcome!\n");
 			printf("        *     *         *       by 1352892 tanjingru\n");
-                        printf("        *      *   o   *                AND \n");
+		        printf("        *      *   o   *                AND \n");
 			printf("        *        * * *              1352888 linyueqiang        \n");
 			printf("        *                                  \n");
 			printf("        *****************************************************\n");
 		}
-		
-
+		else if (strcmp(rdbuf, "game2") == 0)
+		{
+			clear();
+			printf("        *****************************************************\n");
+	 		printf("        *                                  \n");
+			printf("        *        game time          \n");
+			printf("        *     instruction: use up&down&right&left to control the target\n");   
+			printf("        *                                  \n");
+			printf("        *****************************************************\n");
+			game2();
+		}
 		else
 			printf("Command not found, please check!\n");
 	}
@@ -584,7 +618,7 @@ void TestA()
  *======================================================================*/
 void TestB()
 {
-	char tty_name[] = "/dev_tty1";
+	/*char tty_name[] = "/dev_tty1";
 
 	int fd_stdin  = open(tty_name, O_RDWR);
 	assert(fd_stdin  == 0);
@@ -716,6 +750,12 @@ void TestB()
 	}
 
 	assert(0); /* never arrive here */
+	while(1){
+	if(proc_table[5].run_state == 1){
+	disp_str("b");
+	milli_delay(400);
+	}
+	}  
 }
 
 
@@ -723,9 +763,13 @@ void TestB()
 
 
 void TestC()
-{
-	spin("TestC");
-        
+{	
+	while(1){
+	if(proc_table[6].run_state == 1){
+	disp_str("c");
+	milli_delay(900);
+	}
+	}       
 }
 
 
@@ -846,21 +890,30 @@ void help()
 	printf("6. runttt        : Run a small game on this OS\n");
 	printf("6. labyrinth     : Run a labyrinth game\n");
         printf("7. information   : Show students' information\n");
+	printf("8. game2         : Run game2\n");
 	printf("==============================================================================\n");		
 }
 
 void ProcessManage()
 {
 	int i;
+	clear();
 	printf("=============================================================================\n");
-	printf("      myID      |    name       | spriority    | running?\n");
+	printf("============================Process Manager==================================\n");
+	printf("=                                                                           =\n");
+	printf("===========   myID      |    name       | spriority    | running?  =========\n");
 	//进程号，进程名，优先级，是否是系统进程，是否在运行
-	printf("-----------------------------------------------------------------------------\n");
+	printf("=---------------------------------------------------------------------------=\n");
 	for ( i = 0 ; i < NR_TASKS + NR_PROCS ; ++i )//逐个遍历
 	{
 //		if ( proc_table[i].priority == 0) continue;//系统资源跳过
-		printf("        %d           %s            %d                yes\n", proc_table[i].pid, proc_table[i].name, proc_table[i].priority);
+		printf("======         %d              %s             %d           %d  ============\n", proc_table[i].pid, proc_table[i].name, proc_table[i].priority,proc_table[i].run_state);
 	}
+	printf("=============================================================================\n");
+	printf("=          tips: use 'pause a/b/c' command -> you can pause one process             =\n");
+	printf("=          	use 'resume a/b/c' command ->you can resume one process    =\n");
+	printf("=                                                                           =\n");
+	printf("=                                                                           =\n");
 	printf("=============================================================================\n");
 }
 
@@ -899,6 +952,7 @@ void diplaySnakeArea(){
 
 //start the game
 
+int snake_state = 0;
 void StartTheSnake(){
 
 while(snake_head[0] != snake_area_height - 1 && snake_head[1] != snake_area_width- 3 && snake_head[0] != 0 && snake_head[1] != 0){
@@ -922,7 +976,7 @@ while(snake_head[0] != snake_area_height - 1 && snake_head[1] != snake_area_widt
      if(move_direction == 4){
 	snake_head[1]++;
       }
-           if(snake_Array[snake_head[0]][snake_head[1]] == '*') {
+     if(snake_Array[snake_head[0]][snake_head[1]] == '*') {
 	snake_state = 0;
 	break;
 	}
@@ -931,14 +985,14 @@ while(snake_head[0] != snake_area_height - 1 && snake_head[1] != snake_area_widt
 	break;
 	}
      sleep(1);
-
 }
 if(snake_state)  gameSuccessShow();
 else gameOverShow();
 sleep(9);
 clear();
-help()
+help();
 }
+
 void gameOverShow(){
 	printf("=======================================================================\n");
 	printf("==============================Game Over================================\n");
@@ -950,7 +1004,6 @@ void gameSuccessShow(){
 	printf("============================Congratulation!================================\n");
 	printf("=======================will exit in 3 seconds...=======================\n");
 }
-
 
 //listener for key press
 PUBLIC void judgeInpt(u32 key)
@@ -964,18 +1017,242 @@ PUBLIC void judgeInpt(u32 key)
 		if(output[0] == 'd') changeToRight();
 		if(output[0] == 'w') changeToUp();
         }
+	//printf("key pressed");
 }
+
+int listenerStart = 0;
+struct Snake{   //every node of the snake 
+	int x, y;  
+	int now;   //0,1,2,3 means left right up down   
+}Snake[8*16];  //Snake[0] is the head，and the other nodes are recorded in inverted order，eg: Snake[1] is the tail
 
 //change the direction of circle
 void changeToLeft(){
-  move_direction = 3;
+	move_direction = 3;
+	if(listenerStart == 1){
+		Snake[0].now = 0;
+		listenerStart = 0;
+	}
 }
 void changeToDown(){
- move_direction = 2;
+	move_direction = 2;
+	if(listenerStart == 1){
+		Snake[0].now = 3;
+		listenerStart = 0;
+	}
 }
 void changeToRight(){
- move_direction = 4;
+	move_direction = 4;
+	if(listenerStart == 1){
+		Snake[0].now = 1;
+		listenerStart = 0;
+	}
 }
 void changeToUp(){
- move_direction = 1;
+	move_direction = 1;
+	if(listenerStart == 1){
+		Snake[0].now = 2;
+		listenerStart = 0;
+	}
 }
+
+
+/*======================================================================*
+                               game2
+ *======================================================================*/
+
+const int mapH = 8;   
+const int mapW = 16;
+char sHead = '@';    
+char sBody = 'O';   
+char sFood = '#';    
+char sNode = '.';     
+char Map[8][16];  
+
+
+int food[8][2] = {{4,3},{6, 1}, {2, 0}, {8, 9}, {3, 4}, {1,12}, {0, 2}, {5, 13}}; 
+int foodNum = 0;
+int eat = -1;
+int win = 8;
+ 
+int sLength = 1;
+int overOrNot = 0;
+int dx[4] = {0, 0, -1, 1};  
+int dy[4] = {-1, 1, 0, 0}; 
+
+
+
+void gameInit(); 
+void food_init();
+void show();
+void move();
+void checkBorder();
+void checkHead(int x, int y);
+void action();
+
+void game2(){
+	clear();
+ 	gameInit();  
+ 	show(); 
+}
+
+void gameInit()   
+{  
+	int i, j;  
+	int headx = 0;
+	int heady = 0;  
+ 
+	memset(Map, '.', sizeof(Map));  //init map with '.'  
+                                                                                     
+	Map[headx][heady] = sHead;  
+	Snake[0].x = headx;  
+	Snake[0].y = heady;  
+	Snake[0].now = -1;  
+
+	food_init();   //init target 
+	for(i = 0; i < mapH; i++)   
+	{   
+		for(j = 0; j < mapW; j++)  
+			printf("%c", Map[i][j]);  
+		printf("\n");  
+	} 
+	printf("press 'a''s''d''w' key and start the game\n"); 
+
+	listenerStart =1;
+	while(listenerStart);
+} 
+
+
+void food_init(){
+	int fx, fy;  
+	while(1)  
+	{  
+		fx = food[foodNum][0];                                                                                                     
+		fy = food[foodNum][1];       
+		if(Map[fx][fy] == '.')  
+		{   
+			eat++;
+			Map[fx][fy] = sFood;  
+			break;  
+		}
+		foodNum ++;
+	}
+}
+
+void show(){
+	int i, j; 
+	printf("init done"); 
+	while(1)  
+	{
+		listenerStart = 1;
+		if(eat < 4){
+			sleep(3);
+		}else if(eat < 7){
+			sleep(2);
+		}else{
+			sleep(1);
+		}
+		
+		//while(listenerStart);
+
+		move();  
+		if(overOrNot) 
+		{   
+			printf("===========================================================\n");
+			printf("========================Game Over==========================\n");
+			printf("=================will exit in 3 seconds...=================\n");
+			sleep(9);
+			clear();
+			help(); 
+			break;  
+		} 
+		if(eat == win)
+		{
+			printf("===========================================================\n");
+			printf("======================Congratulations======================\n");
+			printf("=================will exit in 3 seconds...=================\n"); 
+ 			sleep(9);
+			clear();
+			help(); 
+			break;
+		}
+		clear();
+		for(i = 0; i < mapH; i++)   
+		{   
+			for(j = 0; j < mapW; j++)  
+			printf("%c", Map[i][j]);  
+			printf("\n");  
+		}  
+
+		printf("      Have fun!\n");
+		printf("eat:%d\n",eat); 
+		for(i=0; i < sLength; i++){
+			printf("x:%d",Snake[i].x);
+			printf("\n");
+			printf("y:%d",Snake[i].y);
+			printf("\n");
+		}
+	}  
+}
+void move(){
+	int i, x, y;  
+    	int t = sLength;
+	x = Snake[0].x;  
+	y = Snake[0].y;  
+
+	Map[x][y] = '.';  //when the snake only have head, it's necessary
+
+	Snake[0].x = Snake[0].x + dx[ Snake[0].now ];  
+	Snake[0].y = Snake[0].y + dy[ Snake[0].now ];  
+
+	checkBorder(); 
+	checkHead(x, y);   
+	if(sLength == t)  //did not eat
+		for(i = 1; i < sLength; i++)  //from the tail  
+		{  
+			if(i == 1)   //tail  
+				Map[ Snake[i].x ][ Snake[i].y ] = '.';  
+     
+			if(i == sLength-1)  //the node after the head 
+			{  
+				Snake[i].x = x;  
+				Snake[i].y = y;  
+				Snake[i].now = Snake[0].now;  
+			}  
+			else 
+			{  
+				Snake[i].x = Snake[i+1].x;  
+				Snake[i].y = Snake[i+1].y;  
+				Snake[i].now = Snake[i+1].now;  
+			}  
+			Map[ Snake[i].x ][ Snake[i].y ] = 'O';  
+		}  
+}
+
+void checkBorder(){
+	if(Snake[0].x < 0 || Snake[0].x >= mapH || Snake[0].y < 0 || Snake[0].y >= mapW)  
+		overOrNot = 1;  
+}
+void checkHead(int x, int y){
+	if(Map[ Snake[0].x ][ Snake[0].y ] == '.')
+		Map[ Snake[0].x ][ Snake[0].y ] = '@';  
+	else if(Map[ Snake[0].x ][ Snake[0].y ] == '#')
+	{  
+		Map[ Snake[0].x ][ Snake[0].y ] = '@';    
+		Snake[sLength].x = x;      //new node 
+		Snake[sLength].y = y;  
+		Snake[sLength].now = Snake[0].now;  
+		Map[ Snake[sLength].x ][ Snake[sLength].y ] = 'O';   
+		sLength++;  
+		food_init();  
+	}  
+	else{ 
+		overOrNot = 1; 
+	}
+
+}
+
+
+
+
+
