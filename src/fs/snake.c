@@ -95,7 +95,14 @@ void show()  //刷新显示地图
 	int i, j;  
 	while(1)  
 	{    
-		Sleep(500); //延迟  milli_delay(500);
+		if(eat < 4){
+			Sleep(500); //延迟  milli_delay(500);
+		}else if(eat < 7){
+			Sleep(200); //延迟  milli_delay(500);
+		}else{
+			Sleep(80); //延迟  milli_delay(500);
+		}
+		
 		action();   
 		move();  
 		if(overOrNot)  //游戏结束  
