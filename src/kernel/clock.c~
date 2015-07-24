@@ -34,7 +34,6 @@ PUBLIC void clock_handler(int irq)
 	if (++ticks >= MAX_TICKS)
 		ticks = 0;
 
-
 	if (p_proc_ready->ticks)
 	   {
 		p_proc_ready->ticks--;

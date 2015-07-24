@@ -1152,11 +1152,15 @@ void gameInit()
 } 
 
 void food_init(){
-	int fx, fy;  
+	int fx, fy;
+	int tick;  
 	while(1)  
 	{  
-		fx = food[foodNum][0];                                                                                                     
-		fy = food[foodNum][1];       
+		//fx = food[foodNum%8][0];                                                                                                     
+		//fy = food[foodNum%8][1];       
+		tick = get_ticks();
+		fx = tick%mapH;
+		fy = tick%mapW;		
 		if(Map[fx][fy] == '.')  
 		{   
 			eat++;
@@ -1212,14 +1216,14 @@ void show(){
 			printf("\n");  
 		}  
 
-		printf("      Have fun!\n");
-		printf("eat:%d\n",eat); 
-		for(i=0; i < sLength; i++){
+		printf("Have fun!\n");
+		printf("You have ate:%d\n",eat); 
+		/*for(i=0; i < sLength; i++){
 			printf("x:%d",Snake[i].x);
 			printf("\n");
 			printf("y:%d",Snake[i].y);
 			printf("\n");
-		}
+		}*/
 	}  
 }
 void move(){
@@ -1227,19 +1231,17 @@ void move(){
     	int t = sLength;
 	x = Snake[0].x;  
 	y = Snake[0].y;  
+	Snake[0].x = Snake[0].x + dx[Snake[0].now];  //now the Snake[0] is the head in the next step
+	Snake[0].y = Snake[0].y + dy[Snake[0].now];  
 
 	Map[x][y] = '.';  //when the snake only have head, it's necessary
-
-	Snake[0].x = Snake[0].x + dx[ Snake[0].now ];  
-	Snake[0].y = Snake[0].y + dy[ Snake[0].now ];  
-
 	checkBorder(); 
 	checkHead(x, y);   
 	if(sLength == t)  //did not eat
 		for(i = 1; i < sLength; i++)  //from the tail  
 		{  
 			if(i == 1)   //tail  
-				Map[ Snake[i].x ][ Snake[i].y ] = '.';  
+				Map[Snake[i].x][Snake[i].y] = '.';  
      
 			if(i == sLength-1)  //the node after the head 
 			{  
@@ -1253,7 +1255,7 @@ void move(){
 				Snake[i].y = Snake[i+1].y;  
 				Snake[i].now = Snake[i+1].now;  
 			}  
-			Map[ Snake[i].x ][ Snake[i].y ] = 'O';  
+			Map[Snake[i].x][Snake[i].y] = 'O';  
 		}  
 }
 
@@ -1262,21 +1264,20 @@ void checkBorder(){
 		overOrNot = 1;  
 }
 void checkHead(int x, int y){
-	if(Map[ Snake[0].x ][ Snake[0].y ] == '.')
-		Map[ Snake[0].x ][ Snake[0].y ] = '@';  
-	else if(Map[ Snake[0].x ][ Snake[0].y ] == '#')
+	if(Map[Snake[0].x][Snake[0].y] == '.')
+		Map[Snake[0].x][Snake[0].y] = '@';  
+	else if(Map[Snake[0].x][Snake[0].y] == '#')
 	{  
-		Map[ Snake[0].x ][ Snake[0].y ] = '@';    
+		Map[Snake[0].x][Snake[0].y] = '@';    
 		Snake[sLength].x = x;      //new node 
 		Snake[sLength].y = y;  
 		Snake[sLength].now = Snake[0].now;  
-		Map[ Snake[sLength].x ][ Snake[sLength].y ] = 'O';   
+		Map[Snake[sLength].x][Snake[sLength].y] = 'O';   
 		sLength++;  
 		food_init();  
 	}  
 	else{ 
 		overOrNot = 1; 
 	}
-
 }
 
